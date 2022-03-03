@@ -2,3 +2,5 @@ ccxt
 functions-framework==3.*
 gevent
 websocket-client
+ciso8601
+pylint

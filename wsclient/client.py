@@ -8,7 +8,7 @@ from typing import DefaultDict, Deque, List, Dict, Tuple, Optional
 from gevent.event import Event
 import config
 
-from websocket_manager import WebsocketManager
+from wsclient.websocket_manager import WebsocketManager
 
 
 class FtxWebsocketClient(WebsocketManager):
@@ -16,11 +16,13 @@ class FtxWebsocketClient(WebsocketManager):
 
     def __init__(self) -> None:
         super().__init__()
-        self._trades: DefaultDict[str, Deque] = defaultdict(lambda: deque([], maxlen=10000))
+        self._trades: DefaultDict[str, Deque] = defaultdict(
+            lambda: deque([], maxlen=10000))
         self._fills: Deque = deque([], maxlen=10000)
         self._api_key = config.FTXAPIKey  # TODO: Place your API key here
         self._api_secret = config.FTXSecretKey  # TODO: Place your API secret here
-        self._orderbook_update_events: DefaultDict[str, Event] = defaultdict(Event)
+        self._orderbook_update_events: DefaultDict[str, Event] = defaultdict(
+            Event)
         self._reset_data()
 
     def _on_open(self, ws):
@@ -30,7 +32,8 @@ class FtxWebsocketClient(WebsocketManager):
         self._subscriptions: List[Dict] = []
         self._orders: DefaultDict[int, Dict] = defaultdict(dict)
         self._tickers: DefaultDict[str, Dict] = defaultdict(dict)
-        self._orderbook_timestamps: DefaultDict[str, float] = defaultdict(float)
+        self._orderbook_timestamps: DefaultDict[str, float] = defaultdict(
+            float)
         self._orderbook_update_events.clear()
         self._orderbooks: DefaultDict[str, Dict[str, DefaultDict[float, float]]] = defaultdict(
             lambda: {side: defaultdict(float) for side in {'bids', 'asks'}})
@@ -137,7 +140,8 @@ class FtxWebsocketClient(WebsocketManager):
         checksum = data['checksum']
         orderbook = self.get_orderbook(market)
         checksum_data = [
-            ':'.join([f'{float(order[0])}:{float(order[1])}' for order in (bid, offer) if order])
+            ':'.join(
+                [f'{float(order[0])}:{float(order[1])}' for order in (bid, offer) if order])
             for (bid, offer) in zip_longest(orderbook['bids'][:100], orderbook['asks'][:100])
         ]
 

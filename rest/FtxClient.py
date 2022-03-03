@@ -8,6 +8,7 @@ import config
 
 
 
+
 class FtxClient:
     _ENDPOINT = 'https://ftx.com/api/'
 
